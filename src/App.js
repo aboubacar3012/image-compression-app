@@ -7,6 +7,17 @@ function App() {
 
   const handleImageUpload = async (event) => {
     const files = event.target.files;
+    await handleImageFiles(files);
+  };
+
+  const handleImageDrop = async (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    const files = event.dataTransfer.files;
+    await handleImageFiles(files);
+  };
+
+  const handleImageFiles = async (files) => {
     const compressedImagesArray = [];
 
     for (let i = 0; i < files.length; i++) {
@@ -43,17 +54,40 @@ function App() {
     });
   };
 
+  const handleDragOver = (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+  };
+
   return (
     <div className="card">
-      <h1>Nojyk Image Compression and ZIP</h1>
-      <input
-        type="file"
-        accept="image/*"
-        multiple
-        onChange={handleImageUpload}
-      />
+      <h1>NOJYK Application: Image Compression and ZIP</h1>
+      <div
+        className="drop-area"
+        onDrop={handleImageDrop}
+        onDragOver={handleDragOver}
+        // @ts-ignore
+        onClick={() => document.getElementById("fileInput").click()}
+      >
+        {/* traduire en francais */}
+        <p>
+          Faites glisser et déposez les images ici ou cliquez pour sélectionner
+        </p>
+
+        <input
+          id="fileInput"
+          type="file"
+          accept="image/*"
+          multiple
+          onChange={handleImageUpload}
+          style={{ display: "none" }}
+        />
+      </div>
+
       {compressedImages.length > 0 && (
-        <button onClick={handleDownload}>Download ZIP</button>
+        <button onClick={handleDownload}>
+          Télécharger les images compressées
+        </button>
       )}
     </div>
   );
